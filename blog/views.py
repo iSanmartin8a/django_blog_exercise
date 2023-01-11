@@ -1,14 +1,9 @@
 from django.shortcuts import get_object_or_404, render
-from django.views import generic, View
-from django.conf import settings
-from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import permission_required
+from django.views import generic
 
 from .forms import CommentForm
 from .models import Post
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class PostList(generic.ListView):
     queryset = Post.objects.filter(status=1).order_by("-created_on")
@@ -16,9 +11,14 @@ class PostList(generic.ListView):
     paginate_by = 3
 
 
-# class PostDetail(generic.DetailView):
-#     model = Post
-#     template_name = 'post_detail.html'
+class PostListUser(LoginRequiredMixin, generic.ListView):
+    '''Vista para mostrar los posts de un usuario'''
+    def get_queryset(self):
+        user = self.request.user
+        return Post.objects.filter(author=user).order_by("-created_on")
+
+    template_name = "listado_usuario.html"
+    paginate_by = 3
 
 
 def post_detail(request, slug):
@@ -51,16 +51,4 @@ def post_detail(request, slug):
         },
     )
 
-@login_required
-@permission_required('blog.can_mark_returned')
-@permission_required('blog.can_edit')
-def my_view(request):
-     if not request.user.email.endswith('@example.com'):
-        return redirect('/login/?next=%s' % request.path)
 
-class MyView(LoginRequiredMixin, View):
-    permission_required = 'blog.can_mark_returned'
-    # Or multiple permissions
-    permission_required = ('blog.can_mark_returned', 'blog.can_edit')
-    # Note that 'blog.can_edit' is just an example
-    # the blog application doesn't have such permission!
