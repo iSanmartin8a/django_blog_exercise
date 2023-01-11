@@ -1,5 +1,10 @@
 from django.shortcuts import get_object_or_404, render
-from django.views import generic
+from django.views import generic, View
+from django.conf import settings
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import permission_required
 
 from .forms import CommentForm
 from .models import Post
@@ -45,3 +50,17 @@ def post_detail(request, slug):
             "comment_form": comment_form,
         },
     )
+
+@login_required
+@permission_required('blog.can_mark_returned')
+@permission_required('blog.can_edit')
+def my_view(request):
+     if not request.user.email.endswith('@example.com'):
+        return redirect('/login/?next=%s' % request.path)
+
+class MyView(LoginRequiredMixin, View):
+    permission_required = 'blog.can_mark_returned'
+    # Or multiple permissions
+    permission_required = ('blog.can_mark_returned', 'blog.can_edit')
+    # Note that 'blog.can_edit' is just an example
+    # the blog application doesn't have such permission!

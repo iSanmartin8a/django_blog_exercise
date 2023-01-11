@@ -1,5 +1,5 @@
 # Django blog exercise
-Alejandro Sanmartin 
+
 Fork del proyecto https://github.com/TheAbhijeet/Django_blog
 
 A blog application made on Django.
