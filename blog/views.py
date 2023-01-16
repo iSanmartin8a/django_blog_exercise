@@ -5,20 +5,21 @@ from .forms import CommentForm
 from .models import Post
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+
 class PostList(generic.ListView):
+    model = Post
     queryset = Post.objects.filter(status=1).order_by("-created_on")
     template_name = "index.html"
     paginate_by = 3
 
+class UserPostList(LoginRequiredMixin,  generic.ListView):
+    '''Muestra los posts de un usuario en particular'''
+    model = Post
+    template_name = "user_posts.html"
+    paginate_by = 10
 
-class PostListUser(LoginRequiredMixin, generic.ListView):
-    '''Vista para mostrar los posts de un usuario'''
     def get_queryset(self):
-        user = self.request.user
-        return Post.objects.filter(author=user).order_by("-created_on")
-
-    template_name = "listado_usuario.html"
-    paginate_by = 3
+        return Post.objects.filter(author=self.request.user).order_by("-created_on")
 
 
 def post_detail(request, slug):
@@ -50,5 +51,3 @@ def post_detail(request, slug):
             "comment_form": comment_form,
         },
     )
-
-

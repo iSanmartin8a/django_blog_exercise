@@ -1,8 +1,16 @@
 # Django blog exercise
 
+![GitHub CI](https://github.com/lmorillas/django_blog_exercise/actions/workflows/ci.yml/badge.svg)
+
 Fork del proyecto https://github.com/TheAbhijeet/Django_blog
 
 A blog application made on Django.
+
+
+## Cambios
+
+* Creación de login
+
 
 ![ezgif com-video-to-gif](https://user-images.githubusercontent.com/38559396/55287491-12c4de80-53c7-11e9-8c6a-3f02b79ba9ca.gif)
 
